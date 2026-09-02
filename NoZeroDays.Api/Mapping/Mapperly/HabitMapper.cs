@@ -1,7 +1,3 @@
-using NoZeroDays.Api.DTO.Habits;
-using NoZeroDays.Api.Entities;
-using Riok.Mapperly.Abstractions;
-
 namespace NoZeroDays.Api.Mapping.Mapperly;
 
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Source)]

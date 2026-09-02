@@ -1,8 +1,3 @@
-using System.Linq.Expressions;
-using NoZeroDays.Api.DTO.Habits;
-using NoZeroDays.Api.DTO.Tag;
-using NoZeroDays.Api.Entities;
-
 namespace NoZeroDays.Api.Mapping.Projections;
 
 public static class HabitProjections

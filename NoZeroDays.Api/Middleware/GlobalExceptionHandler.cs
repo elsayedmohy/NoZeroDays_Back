@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-
-namespace NoZeroDays.Api.Middleware;
+﻿namespace NoZeroDays.Api.Middleware;
 
 public sealed class GlobalExceptionHandler(
     IProblemDetailsService problemDetailsService,

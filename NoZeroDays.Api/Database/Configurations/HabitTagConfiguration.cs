@@ -1,7 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NoZeroDays.Api.Entities;
-
 namespace NoZeroDays.Api.Database.Configurations;
 
 public class HabitTagConfiguration : IEntityTypeConfiguration<HabitTag>

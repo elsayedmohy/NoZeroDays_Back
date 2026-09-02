@@ -1,19 +1,3 @@
-using FluentValidation;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Dynamic.Core;
-using NoZeroDays.Api.Database;
-using NoZeroDays.Api.DTO;
-using NoZeroDays.Api.DTO.Common;
-using NoZeroDays.Api.DTO.Habits;
-using NoZeroDays.Api.Entities;
-using NoZeroDays.Api.Mapping.ManualMappings;
-using NoZeroDays.Api.Mapping.Mapperly;
-using NoZeroDays.Api.Mapping.Projections;
-using NoZeroDays.Api.Service;
-using NoZeroDays.Api.Service.Sorting;
-
 namespace NoZeroDays.Api.Controllers;
 
 [ApiController]
@@ -51,7 +35,7 @@ public sealed class HabitsController(ApplicationDbContext context, HabitMapper m
             .CreateAsync(result,
                 query.Page,
                 query.PageSize);
-            
+
         return Ok(ApiResponse<PaginationResult<HabitResponse>>.Ok(paginationResult));
     }
 

@@ -1,7 +1,3 @@
-using NoZeroDays.Api.DTO.Habits;
-using NoZeroDays.Api.Entities;
-using NoZeroDays.Api.Service.Sorting;
-
 namespace NoZeroDays.Api.Mapping.ManualMappings;
 
 public static class HabitMapping

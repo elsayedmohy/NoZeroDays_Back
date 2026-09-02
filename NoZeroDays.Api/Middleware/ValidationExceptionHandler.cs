@@ -1,8 +1,4 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-
-namespace NoZeroDays.Api.Middleware;
+﻿namespace NoZeroDays.Api.Middleware;
 
 public sealed class ValidationExceptionHandler(IProblemDetailsService problemDetailsService) : IExceptionHandler
 {

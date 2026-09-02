@@ -1,6 +1,4 @@
-﻿using System.Linq.Dynamic.Core;
-
-namespace NoZeroDays.Api.Service.Sorting;
+﻿namespace NoZeroDays.Api.Service.Sorting;
 
 internal static class QueryableExtensions
 {

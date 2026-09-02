@@ -1,6 +1,3 @@
-using System.Net;
-using Microsoft.AspNetCore.Mvc;
-
 namespace NoZeroDays.Api.DTO;
 
 public sealed class ApiResponse<T>

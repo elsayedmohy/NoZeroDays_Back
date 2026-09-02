@@ -1,21 +1,8 @@
-using FluentValidation;
-using FluentValidation.Results;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using NoZeroDays.Api.Database;
-using NoZeroDays.Api.DTO;
-using NoZeroDays.Api.DTO.Tag;
-using NoZeroDays.Api.Entities;
-using NoZeroDays.Api.Mapping.ManualMappings;
-using NoZeroDays.Api.Mapping.Projections;
-using NoZeroDays.Api.Service;
-
 namespace NoZeroDays.Api.Controllers;
 
 [ApiController]
 [Route("tags")]
-public sealed class TagsController(ApplicationDbContext context, Mapping.Mapperly.TagMapper mapper) : ControllerBase
+public sealed class TagsController(ApplicationDbContext context, TagMapper mapper) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetTags()
@@ -102,10 +89,11 @@ public sealed class TagsController(ApplicationDbContext context, Mapping.Mapperl
         {
             return ValidationProblem(ModelState);
         }
+
         tag.Name = tagDto.Name;
         tag.Description = tagDto.Description;
-        tag.UpdatedAt  = tagDto.UpdatedAt;
-        
+        tag.UpdatedAt = tagDto.UpdatedAt;
+
         await context.SaveChangesAsync();
         return NoContent();
     }

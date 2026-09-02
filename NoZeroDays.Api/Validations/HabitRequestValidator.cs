@@ -1,7 +1,3 @@
-using FluentValidation;
-using NoZeroDays.Api.DTO.Habits;
-using NoZeroDays.Api.Enums;
-
 namespace NoZeroDays.Api.Validations;
 
 public  class HabitRequestValidator : AbstractValidator<HabitRequest>

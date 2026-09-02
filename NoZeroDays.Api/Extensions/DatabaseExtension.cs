@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using NoZeroDays.Api.Database;
-
 namespace NoZeroDays.Api.Extensions;
 
 public static class DatabaseExtension

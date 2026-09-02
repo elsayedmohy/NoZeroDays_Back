@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using NoZeroDays.Api.Entities;
-
 namespace NoZeroDays.Api.Database;
 
 public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)

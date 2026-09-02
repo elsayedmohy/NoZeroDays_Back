@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace NoZeroDays.Api.DTO.Common;
 
 public record PaginationResult<T>

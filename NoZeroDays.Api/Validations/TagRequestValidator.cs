@@ -1,6 +1,3 @@
-using FluentValidation;
-using NoZeroDays.Api.DTO.Tag;
-
 namespace NoZeroDays.Api.Validations;
 
 public class TagRequestValidator : AbstractValidator<TagRequest>

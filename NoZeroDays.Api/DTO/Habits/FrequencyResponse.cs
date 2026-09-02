@@ -1,5 +1,3 @@
-using NoZeroDays.Api.Enums;
-
 namespace NoZeroDays.Api.DTO.Habits;
 
 public sealed record FrequencyResponse

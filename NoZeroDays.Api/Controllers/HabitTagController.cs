@@ -1,14 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using NoZeroDays.Api.Database;
-using NoZeroDays.Api.DTO.HabitTag;
-using NoZeroDays.Api.Entities;
-
 namespace NoZeroDays.Api.Controllers;
 
 [ApiController]
 [Route("habits/{habitId}/tags")]
-public class HabitTagController(ApplicationDbContext dbContext) :ControllerBase
+public class HabitTagController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpPut()]
     public async Task<IActionResult> UpdateHabitTags(
@@ -19,7 +13,9 @@ public class HabitTagController(ApplicationDbContext dbContext) :ControllerBase
             .AnyAsync(h => h.Id == habitId);
 
         if (!habitExists)
-        { return NotFound("Habit not found.");}
+        {
+            return NotFound("Habit not found.");
+        }
 
         var tagIds = request.TagIds
             .Distinct()
@@ -31,7 +27,9 @@ public class HabitTagController(ApplicationDbContext dbContext) :ControllerBase
             .ToListAsync();
 
         if (validTagIds.Count != tagIds.Count)
-        {return BadRequest("One or more tags do not exist.");}
+        {
+            return BadRequest("One or more tags do not exist.");
+        }
 
         var requestedTagIds = tagIds.ToHashSet();
 
@@ -57,7 +55,7 @@ public class HabitTagController(ApplicationDbContext dbContext) :ControllerBase
             {
                 HabitId = habitId,
                 TagId = tagId,
-                CreatedAt =  DateTime.Now
+                CreatedAt = DateTime.Now
             });
 
         await dbContext.HabitTags.AddRangeAsync(tagsToAdd);

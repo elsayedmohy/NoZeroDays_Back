@@ -1,6 +1,3 @@
-using NoZeroDays.Api.DTO.Tag;
-using NoZeroDays.Api.Entities;
-
 namespace NoZeroDays.Api.Mapping.ManualMappings;
 
 public static class TagMapping
