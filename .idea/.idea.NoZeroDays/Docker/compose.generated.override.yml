@@ -1,0 +1,21 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  nozerodays.api:
+    build:
+      context: "/home/sayed/Code/BL/NoZeroDays"
+      dockerfile: "NoZeroDays.Api/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net10.0/NoZeroDays.Api.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "nozerodays.api:dev"
+    ports: []
+    volumes:
+    - "/home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api:/app:rw"
+    - "/home/sayed/Code/BL/NoZeroDays:/src:rw"
+    - "/home/sayed/.nuget/packages:/home/app/.nuget/packages"
+    working_dir: "/app"
