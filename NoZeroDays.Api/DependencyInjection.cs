@@ -33,19 +33,23 @@ public static class DependencyInjection
 
     public static WebApplicationBuilder AddDatabase(this WebApplicationBuilder builder)
     {
-        string connectionString =
-            builder.Configuration.GetConnectionString("DefaultConnection");
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseMySql(
-                    connectionString,
-                    ServerVersion.AutoDetect(connectionString),
-                    sqlOptions =>
-                    {
-                        sqlOptions.MigrationsHistoryTable(
-                            HistoryRepository.DefaultTableName);
+        string appConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+        // string identityConnection = builder.Configuration.GetConnectionString("IdentityConnection");
 
-                        sqlOptions.EnableRetryOnFailure();
-                    })
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseNpgsql(appConnection, npgsqlOptions =>
+                {
+                    npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Application);
+                    npgsqlOptions.EnableRetryOnFailure();
+                })
+                .UseSnakeCaseNamingConvention());
+
+        builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+            options.UseNpgsql(appConnection, npgsqlOptions =>
+                {
+                    npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Identity);
+                    npgsqlOptions.EnableRetryOnFailure();
+                })
                 .UseSnakeCaseNamingConvention());
 
         return builder;
@@ -86,4 +90,14 @@ public static class DependencyInjection
 
         return builder;
     }
+
+    public static WebApplicationBuilder AddAuthenticationServices(this WebApplicationBuilder builder)
+    {
+        builder.Services
+            .AddIdentity<IdentityUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+        return builder;
+    }
+    
+    
 }

@@ -2,13 +2,13 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NoZeroDays.Api.Database;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace NoZeroDays.Api.Migrations
+namespace NoZeroDays.Api.Migrations.App
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -17,26 +17,27 @@ namespace NoZeroDays.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasDefaultSchema("no_zero_days")
+                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("NoZeroDays.Api.Entities.Habit", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(64)
-                        .HasColumnType("varchar(64)")
+                        .HasColumnType("character varying(64)")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("description");
 
                     b.Property<DateOnly?>("EndDate")
@@ -44,49 +45,49 @@ namespace NoZeroDays.Api.Migrations
                         .HasColumnName("end_date");
 
                     b.Property<bool>("IsArchived")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasColumnName("is_archived");
 
                     b.Property<DateTime?>("LastCompletedAt")
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("last_completed_at");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("name");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("status");
 
                     b.Property<int>("Type")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("type");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
                         .HasName("pk_habits");
 
-                    b.ToTable("habits", (string)null);
+                    b.ToTable("habits", "no_zero_days");
                 });
 
             modelBuilder.Entity("NoZeroDays.Api.Entities.HabitTag", b =>
                 {
                     b.Property<string>("HabitId")
-                        .HasColumnType("varchar(64)")
+                        .HasColumnType("character varying(64)")
                         .HasColumnName("habit_id");
 
                     b.Property<string>("TagId")
-                        .HasColumnType("varchar(64)")
+                        .HasColumnType("character varying(64)")
                         .HasColumnName("tag_id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.HasKey("HabitId", "TagId")
@@ -95,7 +96,7 @@ namespace NoZeroDays.Api.Migrations
                     b.HasIndex("TagId")
                         .HasDatabaseName("ix_habit_tags_tag_id");
 
-                    b.ToTable("habit_tags", (string)null);
+                    b.ToTable("habit_tags", "no_zero_days");
                 });
 
             modelBuilder.Entity("NoZeroDays.Api.Entities.Tag", b =>
@@ -103,26 +104,26 @@ namespace NoZeroDays.Api.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(64)
-                        .HasColumnType("varchar(64)")
+                        .HasColumnType("character varying(64)")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("description");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("name");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
@@ -132,7 +133,54 @@ namespace NoZeroDays.Api.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_tags_name");
 
-                    b.ToTable("tags", (string)null);
+                    b.ToTable("tags", "no_zero_days");
+                });
+
+            modelBuilder.Entity("NoZeroDays.Api.Entities.User", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("email");
+
+                    b.Property<string>("IdentityId")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("identity_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_users");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_email");
+
+                    b.HasIndex("IdentityId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_identity_id");
+
+                    b.ToTable("users", "no_zero_days");
                 });
 
             modelBuilder.Entity("NoZeroDays.Api.Entities.Habit", b =>
@@ -140,20 +188,20 @@ namespace NoZeroDays.Api.Migrations
                     b.OwnsOne("NoZeroDays.Api.Entities.Frequency", "Frequency", b1 =>
                         {
                             b1.Property<string>("HabitId")
-                                .HasColumnType("varchar(64)")
+                                .HasColumnType("character varying(64)")
                                 .HasColumnName("id");
 
                             b1.Property<int>("TimesPerPeriod")
-                                .HasColumnType("int")
+                                .HasColumnType("integer")
                                 .HasColumnName("frequency_times_per_period");
 
                             b1.Property<int>("Type")
-                                .HasColumnType("int")
+                                .HasColumnType("integer")
                                 .HasColumnName("frequency_type");
 
                             b1.HasKey("HabitId");
 
-                            b1.ToTable("habits");
+                            b1.ToTable("habits", "no_zero_days");
 
                             b1.WithOwner()
                                 .HasForeignKey("HabitId")
@@ -163,20 +211,20 @@ namespace NoZeroDays.Api.Migrations
                     b.OwnsOne("NoZeroDays.Api.Entities.Milestone", "Milestone", b1 =>
                         {
                             b1.Property<string>("HabitId")
-                                .HasColumnType("varchar(64)")
+                                .HasColumnType("character varying(64)")
                                 .HasColumnName("id");
 
                             b1.Property<int>("Current")
-                                .HasColumnType("int")
+                                .HasColumnType("integer")
                                 .HasColumnName("milestone_current");
 
                             b1.Property<int>("Target")
-                                .HasColumnType("int")
+                                .HasColumnType("integer")
                                 .HasColumnName("milestone_target");
 
                             b1.HasKey("HabitId");
 
-                            b1.ToTable("habits");
+                            b1.ToTable("habits", "no_zero_days");
 
                             b1.WithOwner()
                                 .HasForeignKey("HabitId")
@@ -186,22 +234,22 @@ namespace NoZeroDays.Api.Migrations
                     b.OwnsOne("NoZeroDays.Api.Entities.Target", "Target", b1 =>
                         {
                             b1.Property<string>("HabitId")
-                                .HasColumnType("varchar(64)")
+                                .HasColumnType("character varying(64)")
                                 .HasColumnName("id");
 
                             b1.Property<string>("Unit")
                                 .IsRequired()
                                 .HasMaxLength(100)
-                                .HasColumnType("varchar(100)")
+                                .HasColumnType("character varying(100)")
                                 .HasColumnName("target_unit");
 
                             b1.Property<int>("Value")
-                                .HasColumnType("int")
+                                .HasColumnType("integer")
                                 .HasColumnName("target_value");
 
                             b1.HasKey("HabitId");
 
-                            b1.ToTable("habits");
+                            b1.ToTable("habits", "no_zero_days");
 
                             b1.WithOwner()
                                 .HasForeignKey("HabitId")

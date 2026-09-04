@@ -55,8 +55,6 @@
 /home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Microsoft.EntityFrameworkCore.Relational.dll
 /home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Microsoft.Extensions.DependencyModel.dll
 /home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Mono.TextTemplating.dll
-/home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/MySqlConnector.dll
-/home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Pomelo.EntityFrameworkCore.MySql.dll
 /home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/System.CodeDom.dll
 /home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/System.Composition.AttributedModel.dll
 /home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/System.Composition.Convention.dll
@@ -137,3 +135,6 @@
 /home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/FluentValidation.DependencyInjectionExtensions.dll
 /home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/System.Linq.Dynamic.Core.dll
 /home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/obj/Debug/net10.0/NoZeroDays.Api.sourcelink.json
+/home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+/home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Npgsql.dll
+/home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll

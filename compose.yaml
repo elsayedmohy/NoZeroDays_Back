@@ -8,41 +8,30 @@
       - 5248:8080
       - 7046:8081
     environment:
-      - ConnectionStrings__DefaultConnection=Server=nozerodays.mysql;Port=3306;Database=zero_db;User=app;Password=root;
+      - ConnectionStrings__DefaultConnection=Host=nozerodays.postgres;Port=5432;Database=zero_db;Username=postgres;Password=0000
+      - ConnectionStrings__IdentityConnection=Host=nozerodays.postgres;Port=5432;Database=zero_db;Username=postgres;Password=0000
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://nozerodays.aspire-dashboard:18889
       - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
     depends_on:
-      nozerodays.mysql:
+      nozerodays.postgres:
         condition: service_healthy
 
-  nozerodays.mysql:
-    image: mysql:latest
+  nozerodays.postgres:
+    image: postgres:16
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD-root}
-      MYSQL_DATABASE: zero_db
-      MYSQL_USER: app
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD-root}
+      POSTGRES_DB: zero_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 0000
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - mysql-data:/var/lib/mysql
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD-root}" ]
+      test: [ "CMD-SHELL", "pg_isready -U app -d zero_db" ]
       interval: 5s
       timeout: 5s
       retries: 10
       start_period: 20s
-  
-  
-  nozerodays.seq:
-    image: datalust/seq:latest
-    environment:
-      ACCEPT_EULA: "Y"
-    volumes:
-      - ./.containers/seq_data:/data
-    ports:
-      - 8080:80
-      - 5341:5341
 
   nozerodays.aspire-dashboard:
     image: mcr.microsoft.com/dotnet/aspire-dashboard:latest
@@ -50,6 +39,6 @@
       DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: true
     ports:
       - 18888:18888
-    
+
 volumes:
-  mysql-data:
+  postgres-data:

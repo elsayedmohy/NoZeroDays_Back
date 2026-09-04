@@ -58,6 +58,11 @@
               "version": "[12.1.1, )",
               "versionCentrallyManaged": true
             },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.0, )",
+              "versionCentrallyManaged": true
+            },
             "Microsoft.AspNetCore.JsonPatch": {
               "target": "Package",
               "version": "[9.0.0, )",
@@ -78,6 +83,11 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[9.0.4, )",
               "versionCentrallyManaged": true
             },
             "OpenTelemetry.Exporter.OpenTelemetryProtocol": {
@@ -105,11 +115,6 @@
               "version": "[1.18.0, )",
               "versionCentrallyManaged": true
             },
-            "Pomelo.EntityFrameworkCore.MySql": {
-              "target": "Package",
-              "version": "[9.0.0, )",
-              "versionCentrallyManaged": true
-            },
             "Riok.Mapperly": {
               "target": "Package",
               "version": "[4.3.1, )",
@@ -131,16 +136,17 @@
           "centralPackageVersions": {
             "EFCore.NamingConventions": "9.0.0",
             "FluentValidation.DependencyInjectionExtensions": "12.1.1",
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "9.0.0",
             "Microsoft.AspNetCore.JsonPatch": "9.0.0",
             "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "9.0.0",
             "Microsoft.AspNetCore.OpenApi": "10.0.11",
             "Microsoft.EntityFrameworkCore.Tools": "9.0.0",
+            "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
             "OpenTelemetry.Exporter.OpenTelemetryProtocol": "1.18.0",
             "OpenTelemetry.Extensions.Hosting": "1.18.0",
             "OpenTelemetry.Instrumentation.AspNetCore": "1.18.0",
             "OpenTelemetry.Instrumentation.Http": "1.18.0",
             "OpenTelemetry.Instrumentation.Runtime": "1.18.0",
-            "Pomelo.EntityFrameworkCore.MySql": "9.0.0",
             "Riok.Mapperly": "4.3.1",
             "SonarAnalyzer.CSharp": "10.33.0.1635",
             "System.Linq.Dynamic.Core": "1.7.4"
