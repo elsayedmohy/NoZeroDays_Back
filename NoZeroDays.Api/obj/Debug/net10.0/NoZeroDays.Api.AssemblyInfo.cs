@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("5fe9bebb-5d2c-47ee-8fa5-66f1632dd558")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("NoZeroDays.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d3e1bc6bec1c32c82b9b0f4b679ea98da5366ee7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c83a5440504477996890e58a635cc4651ab94c7b")]
 [assembly: System.Reflection.AssemblyProductAttribute("NoZeroDays.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NoZeroDays.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

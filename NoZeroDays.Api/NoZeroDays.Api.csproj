@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
+    <PropertyGroup>
+      <UserSecretsId>5fe9bebb-5d2c-47ee-8fa5-66f1632dd558</UserSecretsId>
+    </PropertyGroup>
+
     <ItemGroup>
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
@@ -9,6 +13,7 @@
     <ItemGroup>
       <PackageReference Include="EFCore.NamingConventions" />
       <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
       <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />

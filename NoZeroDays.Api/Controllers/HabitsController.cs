@@ -1,5 +1,6 @@
 namespace NoZeroDays.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("habits")]
 public sealed class HabitsController(ApplicationDbContext context, HabitMapper mapper) : ControllerBase

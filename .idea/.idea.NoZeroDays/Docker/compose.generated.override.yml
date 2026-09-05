@@ -17,5 +17,6 @@ services:
     volumes:
     - "/home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api:/app:rw"
     - "/home/sayed/Code/BL/NoZeroDays:/src:rw"
+    - "/home/sayed/.microsoft/usersecrets:/home/app/.microsoft/usersecrets"
     - "/home/sayed/.nuget/packages:/home/app/.nuget/packages"
     working_dir: "/app"

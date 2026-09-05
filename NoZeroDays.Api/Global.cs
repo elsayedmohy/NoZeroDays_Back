@@ -20,6 +20,7 @@ global using NoZeroDays.Api.DTO.HabitTag;
 global using NoZeroDays.Api.DTO.Tag;
 global using NoZeroDays.Api.DTO.Common;
 global using NoZeroDays.Api.DTO.User;
+global using NoZeroDays.Api.DTO.Auth;
 global using NoZeroDays.Api.Entities;
 global using NoZeroDays.Api.Mapping.Mapperly;
 global using NoZeroDays.Api.Mapping.Projections;

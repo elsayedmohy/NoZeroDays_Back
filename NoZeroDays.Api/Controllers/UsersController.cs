@@ -2,6 +2,7 @@
 namespace NoZeroDays.Api.Controllers;
 
 
+[Authorize]
 [ApiController]
 [Route("users")]
 public sealed class UsersController(ApplicationDbContext dbContext) : ControllerBase

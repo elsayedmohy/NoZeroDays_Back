@@ -138,3 +138,11 @@
 /home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 /home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Npgsql.dll
 /home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll
+/home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Microsoft.IdentityModel.Abstractions.dll
+/home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Microsoft.IdentityModel.Logging.dll
+/home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Microsoft.IdentityModel.Protocols.dll
+/home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/Microsoft.IdentityModel.Tokens.dll
+/home/sayed/Code/BL/NoZeroDays/NoZeroDays.Api/bin/Debug/net10.0/System.IdentityModel.Tokens.Jwt.dll

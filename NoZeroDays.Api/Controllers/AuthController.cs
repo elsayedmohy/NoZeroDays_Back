@@ -1,4 +1,10 @@
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Options;
+using NoZeroDays.Api.Helper;
+using NoZeroDays.Api.Service.Auth;
+using LoginRequest = NoZeroDays.Api.DTO.Auth.LoginRequest;
+using RegisterRequest = NoZeroDays.Api.DTO.Auth.RegisterRequest;
 
 namespace NoZeroDays.Api.Controllers;
 
@@ -8,15 +14,19 @@ namespace NoZeroDays.Api.Controllers;
 public class AuthController(
     UserManager<IdentityUser> userManager,
     ApplicationDbContext applicationDbContext,
-    ApplicationIdentityDbContext identityDbContext
-) : ControllerBase
+    ApplicationIdentityDbContext identityDbContext,
+    JwtTokenProvider jwtTokenProvider,
+    IOptions<JwtOptions> options) : ControllerBase
 {
+    
+   private readonly JwtOptions jwtOptions =  options.Value;
+    
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterRequest request)
+    public async Task<ActionResult<AccessTokenResponse>> Register(RegisterRequest request)
     {
         IExecutionStrategy strategy = identityDbContext.Database.CreateExecutionStrategy();
 
-        IActionResult? result = null;
+        ActionResult<AccessTokenResponse>? result = null;
 
         await strategy.ExecuteAsync(async () =>
         {
@@ -49,9 +59,69 @@ public class AuthController(
             user.IdentityId = identityUser.Id;
             await applicationDbContext.Users.AddAsync(user);
             await applicationDbContext.SaveChangesAsync();
+            var tokenRequest = new TokenRequest(identityUser.Id, identityUser.Email);
+            AccessTokenResponse accessTokens = jwtTokenProvider.GenerateToken(tokenRequest);
+            var refreshToken = new RefreshToken
+            {
+                Id = Guid.CreateVersion7(),
+                Token = accessTokens.refreshToken,
+                UserId = identityUser.Id,
+                ExpiresAt = DateTime.UtcNow.AddDays(jwtOptions.RefreshTokenExpirationDays),
+            };
+            
+            identityDbContext.RefreshTokens.Add(refreshToken);
+            await identityDbContext.SaveChangesAsync();
             await transaction.CommitAsync();
-            result = Ok(user.Id);
+
+            result = Ok(accessTokens);
         });
 
         return result!;
-    }}
+    }
+
+
+    [HttpPost("login")]
+    public async Task<ActionResult<AccessTokenResponse>> Login(LoginRequest request)
+    {
+      IdentityUser? identityUser = await  userManager.FindByEmailAsync(request.Email);
+      if (identityUser is null || !await userManager.CheckPasswordAsync(identityUser , request.Password))
+      {
+          return Unauthorized(); 
+      }
+      var tokenRequest = new TokenRequest(identityUser.Id, identityUser.Email);
+      AccessTokenResponse accessTokens = jwtTokenProvider.GenerateToken(tokenRequest);
+      var refreshToken = new RefreshToken
+      {
+          Id = Guid.CreateVersion7(),
+          Token = accessTokens.refreshToken,
+          UserId = identityUser.Id,
+          ExpiresAt = DateTime.UtcNow.AddDays(jwtOptions.RefreshTokenExpirationDays),
+      };
+            
+      identityDbContext.RefreshTokens.Add(refreshToken);
+      await identityDbContext.SaveChangesAsync();
+      return Ok(accessTokens);
+    }
+
+
+    [HttpPost("refresh")]
+    public async Task<ActionResult<AccessTokenResponse>> Refresh(RefreshTokenRequest request)
+    {
+        RefreshToken? refreshToken = await identityDbContext.RefreshTokens
+            .Include(rt => rt.User)
+            .FirstOrDefaultAsync(rf => rf.Token == request.RefreshToken);
+        if (refreshToken is null || refreshToken.ExpiresAt < DateTime.UtcNow)
+        {
+            return Unauthorized();
+        }
+        
+        var tokenRequest = new TokenRequest(refreshToken.User.Id, refreshToken.User.Email);
+        AccessTokenResponse accessTokens = jwtTokenProvider.GenerateToken(tokenRequest);
+        refreshToken.Token  = accessTokens.refreshToken;
+        refreshToken.ExpiresAt = DateTime.UtcNow.AddDays(jwtOptions.RefreshTokenExpirationDays);
+        await identityDbContext.SaveChangesAsync();
+        return Ok(accessTokens);
+    }
+    
+    
+}

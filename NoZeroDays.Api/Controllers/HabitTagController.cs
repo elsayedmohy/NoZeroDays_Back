@@ -1,5 +1,6 @@
 namespace NoZeroDays.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("habits/{habitId}/tags")]
 public class HabitTagController(ApplicationDbContext dbContext) : ControllerBase

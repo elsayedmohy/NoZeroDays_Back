@@ -1,5 +1,11 @@
 ﻿
 
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using NoZeroDays.Api.Helper;
+using NoZeroDays.Api.Service.Auth;
+
 namespace NoZeroDays.Api;
 
 public static class DependencyInjection
@@ -84,9 +90,10 @@ public static class DependencyInjection
         builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
         builder.Services.AddTransient<SortMappingProvider>();
+        
         builder.Services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<HabitResponse, Habit>>(_ =>
             HabitMapping.SortMapping);
-
+        builder.Services.AddTransient<JwtTokenProvider>();
 
         return builder;
     }
@@ -96,6 +103,27 @@ public static class DependencyInjection
         builder.Services
             .AddIdentity<IdentityUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+        
+        
+        builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+        JwtOptions jwtOptions =  builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
+        
+        builder.Services
+            .AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                   ValidIssuer = jwtOptions.Issuer,
+                   ValidAudience = jwtOptions.Audience,
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
+                });
+        
+        builder.Services.AddAuthorization();
+        
         return builder;
     }
     

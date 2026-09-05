@@ -1,5 +1,6 @@
 namespace NoZeroDays.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("tags")]
 public sealed class TagsController(ApplicationDbContext context, TagMapper mapper) : ControllerBase

@@ -1,4 +1,4 @@
-namespace NoZeroDays.Api.DTO.User;
+namespace NoZeroDays.Api.DTO.Auth;
 
 public sealed record RegisterRequest
 {
