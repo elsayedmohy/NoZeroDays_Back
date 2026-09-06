@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NoZeroDays.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c83a5440504477996890e58a635cc4651ab94c7b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+91640ce898a4531ddb56c8b6d3baee9aed488d52")]
 [assembly: System.Reflection.AssemblyProductAttribute("NoZeroDays.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NoZeroDays.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

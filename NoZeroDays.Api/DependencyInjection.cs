@@ -85,7 +85,6 @@ public static class DependencyInjection
 
     public static WebApplicationBuilder AddApplicationServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddDataMapper();
 
         builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
@@ -94,6 +93,8 @@ public static class DependencyInjection
         builder.Services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<HabitResponse, Habit>>(_ =>
             HabitMapping.SortMapping);
         builder.Services.AddTransient<JwtTokenProvider>();
+        builder.Services.AddMemoryCache();
+        builder.Services.AddScoped<UserContext>();
 
         return builder;
     }

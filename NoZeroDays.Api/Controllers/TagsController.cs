@@ -1,14 +1,25 @@
+using NoZeroDays.Api.Service.Auth;
+
 namespace NoZeroDays.Api.Controllers;
 
 [Authorize]
 [ApiController]
 [Route("tags")]
-public sealed class TagsController(ApplicationDbContext context, TagMapper mapper) : ControllerBase
+public sealed class TagsController(
+    ApplicationDbContext context,
+    UserContext userContext
+    ) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetTags()
     {
+        string? userId = await userContext.GetUserId();
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
         List<TagResponse> result = await context.Tags
+            .Where(t => t.UserId  == userId) 
             .AsNoTracking()
             .Select(TagProjections.ToResponse)
             .ToListAsync();
@@ -18,8 +29,14 @@ public sealed class TagsController(ApplicationDbContext context, TagMapper mappe
     [HttpGet("{id}")]
     public async Task<ActionResult<TagResponse>> GetTag(string id)
     {
+        string? userId = await userContext.GetUserId();
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
         TagResponse result = await context.Tags
             .AsNoTracking()
+            .Where(t => t.UserId  == userId) 
             .Where(t => t.Id == id)
             .Select(TagProjections.ToResponse)
             .FirstOrDefaultAsync();
@@ -36,13 +53,18 @@ public sealed class TagsController(ApplicationDbContext context, TagMapper mappe
         TagRequest request,
         IValidator<TagRequest> validator)
     {
+        string? userId = await userContext.GetUserId();
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
         await validator.ValidateAndThrowAsync(request);
         if (await context.Tags.AnyAsync(t => t.Name == request.Name))
         {
             return Conflict($"Tag with name '{request.Name}' already exists.");
         }
 
-        Tag tag = mapper.ToEntity(request);
+        Tag tag = TagMapping.ToEntity(request,userId);
 
         tag.Id = $"t_{Guid.CreateVersion7()}";
         tag.CreatedAt = DateTime.UtcNow;
@@ -51,7 +73,7 @@ public sealed class TagsController(ApplicationDbContext context, TagMapper mappe
 
         await context.SaveChangesAsync();
 
-        TagResponse response = mapper.ToDto(tag);
+        TagResponse response = TagMapping.ToResponse(tag);
 
         return CreatedAtAction(
             nameof(GetTag),
@@ -62,7 +84,14 @@ public sealed class TagsController(ApplicationDbContext context, TagMapper mappe
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateTag(string id, TagRequest request)
     {
-        Tag? tag = await context.Tags.Where(h => h.Id == id)
+        string? userId = await userContext.GetUserId();
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+        Tag? tag = await context.Tags
+            .Where(t => t.UserId  == userId) 
+            .Where(h => h.Id == id)
             .FirstOrDefaultAsync();
         if (tag is null)
         {
@@ -77,14 +106,21 @@ public sealed class TagsController(ApplicationDbContext context, TagMapper mappe
     [HttpPatch("{id}")]
     public async Task<ActionResult> PatchTag(string id, JsonPatchDocument<TagResponse> patchDocument)
     {
-        Tag? tag = await context.Tags.Where(h => h.Id == id)
+        string? userId = await userContext.GetUserId();
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+        Tag? tag = await context.Tags
+            .Where(t => t.UserId  == userId) 
+            .Where(h => h.Id == id)
             .FirstOrDefaultAsync();
         if (tag is null)
         {
             return NotFound();
         }
 
-        TagResponse tagDto = mapper.ToDto(tag);
+        TagResponse tagDto = TagMapping.ToResponse(tag);
         patchDocument.ApplyTo(tagDto);
         if (!TryValidateModel(tagDto))
         {
@@ -103,7 +139,14 @@ public sealed class TagsController(ApplicationDbContext context, TagMapper mappe
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteTag(string id)
     {
-        Tag? tag = await context.Tags.Where(tag => tag.Id == id)
+        string? userId = await userContext.GetUserId();
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+        Tag? tag = await context.Tags
+            .Where(t => t.UserId  == userId) 
+            .Where(tag => tag.Id == id)
             .FirstOrDefaultAsync();
         if (tag is null)
         {

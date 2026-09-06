@@ -1,9 +1,13 @@
+using NoZeroDays.Api.Service.Auth;
+
 namespace NoZeroDays.Api.Controllers;
 
 [Authorize]
 [ApiController]
 [Route("habits")]
-public sealed class HabitsController(ApplicationDbContext context, HabitMapper mapper) : ControllerBase
+public sealed class HabitsController(ApplicationDbContext dbContext,
+    UserContext userContext
+    ) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetHabits(
@@ -11,6 +15,13 @@ public sealed class HabitsController(ApplicationDbContext context, HabitMapper m
         SortMappingProvider sortMappingProvider
     )
     {
+        
+        string? userId = await userContext.GetUserId();
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+        
         if (!sortMappingProvider.ValidateMappings<HabitResponse, Habit>(query.Sort))
         {
             return Problem(
@@ -23,7 +34,8 @@ public sealed class HabitsController(ApplicationDbContext context, HabitMapper m
 
         SortMapping[] sortMappings = sortMappingProvider.GetMappings<HabitResponse, Habit>();
 
-        IQueryable<HabitResponse> result = context.Habits
+        IQueryable<HabitResponse> result = dbContext.Habits
+            .Where(habit => habit.UserId == userId)
             .Where(habit => query.Search == null
                             || habit.Name.Contains(query.Search)
                             || habit.Description != null && habit.Description.Contains(query.Search))
@@ -43,8 +55,14 @@ public sealed class HabitsController(ApplicationDbContext context, HabitMapper m
     [HttpGet("{id}")]
     public async Task<ActionResult<HabitResponse>> GetHabit(string id)
     {
-        HabitResponse result = await context.Habits
+        string? userId = await userContext.GetUserId();
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+        HabitResponse result = await dbContext.Habits
             .AsNoTracking()
+            .Where(habit => habit.UserId == userId)
             .Where(h => h.Id == id)
             .Select(HabitProjections.ToResponse)
             .FirstOrDefaultAsync();
@@ -61,12 +79,17 @@ public sealed class HabitsController(ApplicationDbContext context, HabitMapper m
         HabitRequest request,
         IValidator<HabitRequest> validator)
     {
+        string? userId = await userContext.GetUserId();
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
         await validator.ValidateAndThrowAsync(request);
-        Habit habit = mapper.ToEntity(request);
+        Habit habit = HabitMapping.ToEntity(request , userId);
         habit.Id = $"h_{Guid.CreateVersion7()}";
-        context.Habits.Add(habit);
-        await context.SaveChangesAsync();
-        HabitResponse response = mapper.ToDto(habit);
+        dbContext.Habits.Add(habit);
+        await dbContext.SaveChangesAsync();
+        HabitResponse response =HabitMapping.ToDto(habit);
         return CreatedAtAction(
             nameof(GetHabit),
             new { id = response.Id },
@@ -76,7 +99,14 @@ public sealed class HabitsController(ApplicationDbContext context, HabitMapper m
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateHabit(string id, HabitRequest request)
     {
-        Habit? habit = await context.Habits.Where(h => h.Id == id)
+        string? userId = await userContext.GetUserId();
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+        Habit? habit = await dbContext.Habits
+            .Where(h => h.UserId == userId)
+            .Where(h => h.Id == id)
             .FirstOrDefaultAsync();
         if (habit is null)
         {
@@ -84,21 +114,28 @@ public sealed class HabitsController(ApplicationDbContext context, HabitMapper m
         }
 
         habit.HabitToDto(request);
-        await context.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
         return NoContent();
     }
 
     [HttpPatch("{id}")]
     public async Task<ActionResult> PatchHabit(string id, JsonPatchDocument<HabitResponse> patchDocument)
     {
-        Habit? habit = await context.Habits.Where(h => h.Id == id)
+        string? userId = await userContext.GetUserId();
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+        Habit? habit = await dbContext.Habits
+            .Where(h => h.UserId == userId)
+            .Where(h => h.Id == id)
             .FirstOrDefaultAsync();
         if (habit is null)
         {
             return NotFound();
         }
 
-        HabitResponse habitDto = mapper.ToDto(habit);
+        HabitResponse habitDto = HabitMapping.ToDto(habit);
         patchDocument.ApplyTo(habitDto);
         if (!TryValidateModel(habitDto))
         {
@@ -109,7 +146,7 @@ public sealed class HabitsController(ApplicationDbContext context, HabitMapper m
         habit.Description = habitDto.Description;
         habit.UpdatedAt = habitDto.UpdatedAt;
 
-        await context.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
         return NoContent();
     }
 
@@ -117,15 +154,22 @@ public sealed class HabitsController(ApplicationDbContext context, HabitMapper m
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteHabit(string id)
     {
-        Habit? habit = await context.Habits.Where(h => h.Id == id)
+        string? userId = await userContext.GetUserId();
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+        Habit? habit = await dbContext.Habits
+            .Where(h => h.UserId == userId)
+            .Where(h => h.Id == id)
             .FirstOrDefaultAsync();
         if (habit is null)
         {
             return NotFound();
         }
 
-        context.Habits.Remove(habit);
-        await context.SaveChangesAsync();
+        dbContext.Habits.Remove(habit);
+        await dbContext.SaveChangesAsync();
         return NoContent();
     }
 }

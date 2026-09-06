@@ -324,6 +324,8 @@ dotnet_diagnostic.CA1849.severity = none
 # CA1860: Avoid using 'Enumerable.Any()' extension method
 dotnet_diagnostic.CA1860.severity = none
 
+dotnet_diagnostic.CA1861.severity = warning
+
 # CA1862: Use the 'StringComparison' method overloads to perform case-insensitive string comparisons
 dotnet_diagnostic.CA1862.severity = none
 

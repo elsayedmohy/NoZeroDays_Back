@@ -22,7 +22,6 @@ global using NoZeroDays.Api.DTO.Common;
 global using NoZeroDays.Api.DTO.User;
 global using NoZeroDays.Api.DTO.Auth;
 global using NoZeroDays.Api.Entities;
-global using NoZeroDays.Api.Mapping.Mapperly;
 global using NoZeroDays.Api.Mapping.Projections;
 global using NoZeroDays.Api.Mapping.ManualMappings;
 global using NoZeroDays.Api.Extensions;
