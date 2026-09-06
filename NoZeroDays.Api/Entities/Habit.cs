@@ -16,6 +16,6 @@ public sealed class Habit
     public DateTime? UpdatedAt  { get; set; }
     public DateTime? LastCompletedAt  { get; set; }
     public List<HabitTag> HabitTags { get; set; }
-    public List<Tag> Tags { get; set; }
+    public List<Tag> Tags { get; set; } = [];
     
 }

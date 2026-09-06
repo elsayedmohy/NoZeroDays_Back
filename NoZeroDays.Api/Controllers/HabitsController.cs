@@ -67,8 +67,11 @@ public sealed class HabitsController(ApplicationDbContext context, HabitMapper m
         context.Habits.Add(habit);
         await context.SaveChangesAsync();
         HabitResponse response = mapper.ToDto(habit);
-        return CreatedAtAction(nameof(GetHabit), new { id = response.Id }, Ok(ApiResponse<HabitResponse>.Ok(response)));
-    }
+        return CreatedAtAction(
+            nameof(GetHabit),
+            new { id = response.Id },
+            ApiResponse<HabitResponse>.Ok(response)
+        );    }
 
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateHabit(string id, HabitRequest request)
