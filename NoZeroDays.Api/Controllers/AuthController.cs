@@ -40,8 +40,22 @@ public class AuthController(
                 UserName = request.Name,
             };
 
-            IdentityResult identityResult = await userManager.CreateAsync(identityUser, request.Password);
+            IdentityResult identityCreate = await userManager.CreateAsync(identityUser, request.Password);
 
+            if (!identityCreate.Succeeded)
+            {
+                await transaction.RollbackAsync();
+                var extensions = new Dictionary<string, object>
+                {
+                    { "error", identityCreate.Errors.ToDictionary(x => x.Code, x => x.Description) }
+                };
+                result = Problem(detail: "Registration failed",
+                    statusCode: StatusCodes.Status400BadRequest,
+                    extensions: extensions);
+                return;
+            }
+            
+            IdentityResult identityResult = await userManager.AddToRoleAsync(identityUser, Roles.User); 
             if (!identityResult.Succeeded)
             {
                 await transaction.RollbackAsync();
@@ -54,12 +68,11 @@ public class AuthController(
                     extensions: extensions);
                 return;
             }
-
             var user = request.ToUser();
             user.IdentityId = identityUser.Id;
             await applicationDbContext.Users.AddAsync(user);
             await applicationDbContext.SaveChangesAsync();
-            var tokenRequest = new TokenRequest(identityUser.Id, identityUser.Email);
+            var tokenRequest = new TokenRequest(identityUser.Id, identityUser.Email, [Roles.User]);
             AccessTokenResponse accessTokens = jwtTokenProvider.GenerateToken(tokenRequest);
             var refreshToken = new RefreshToken
             {
@@ -88,7 +101,10 @@ public class AuthController(
       {
           return Unauthorized(); 
       }
-      var tokenRequest = new TokenRequest(identityUser.Id, identityUser.Email);
+      
+      IList<string> roles =  await userManager.GetRolesAsync(identityUser);
+      
+      var tokenRequest = new TokenRequest(identityUser.Id, identityUser.Email!, roles);
       AccessTokenResponse accessTokens = jwtTokenProvider.GenerateToken(tokenRequest);
       var refreshToken = new RefreshToken
       {
@@ -114,8 +130,9 @@ public class AuthController(
         {
             return Unauthorized();
         }
-        
-        var tokenRequest = new TokenRequest(refreshToken.User.Id, refreshToken.User.Email);
+        IList<string> roles =  await userManager.GetRolesAsync(refreshToken.User);
+
+        var tokenRequest = new TokenRequest(refreshToken.User.Id, refreshToken.User.Email!,roles);
         AccessTokenResponse accessTokens = jwtTokenProvider.GenerateToken(tokenRequest);
         refreshToken.Token  = accessTokens.refreshToken;
         refreshToken.ExpiresAt = DateTime.UtcNow.AddDays(jwtOptions.RefreshTokenExpirationDays);

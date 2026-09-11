@@ -2,7 +2,7 @@ using NoZeroDays.Api.Service.Auth;
 
 namespace NoZeroDays.Api.Controllers;
 
-[Authorize]
+[Authorize(Roles =Roles.User)]
 [ApiController]
 [Route("habits")]
 public sealed class HabitsController(ApplicationDbContext dbContext,
