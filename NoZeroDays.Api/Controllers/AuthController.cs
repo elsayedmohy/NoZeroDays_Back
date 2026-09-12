@@ -116,16 +116,35 @@ public class AuthController(
             
       identityDbContext.RefreshTokens.Add(refreshToken);
       await identityDbContext.SaveChangesAsync();
+
+      Response.Cookies.Append(
+          "refreshToken",
+          accessTokens.refreshToken,
+          new CookieOptions
+          {
+              HttpOnly = true,
+              Secure = true,
+              SameSite = SameSiteMode.Lax,
+              Expires = refreshToken.ExpiresAt
+          });
+
       return Ok(accessTokens);
     }
 
 
     [HttpPost("refresh")]
-    public async Task<ActionResult<AccessTokenResponse>> Refresh(RefreshTokenRequest request)
+    public async Task<ActionResult<AccessTokenResponse>> Refresh()
     {
+        if (!Request.Cookies.TryGetValue(
+                "refreshToken",
+                out string? refreshTokenValue))
+        {
+            return Unauthorized();
+        }
+        
         RefreshToken? refreshToken = await identityDbContext.RefreshTokens
             .Include(rt => rt.User)
-            .FirstOrDefaultAsync(rf => rf.Token == request.RefreshToken);
+            .FirstOrDefaultAsync(rf => rf.Token == refreshTokenValue);
         if (refreshToken is null || refreshToken.ExpiresAt < DateTime.UtcNow)
         {
             return Unauthorized();
@@ -137,6 +156,16 @@ public class AuthController(
         refreshToken.Token  = accessTokens.refreshToken;
         refreshToken.ExpiresAt = DateTime.UtcNow.AddDays(jwtOptions.RefreshTokenExpirationDays);
         await identityDbContext.SaveChangesAsync();
+        Response.Cookies.Append(
+            "refreshToken",
+            accessTokens.refreshToken,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Lax,
+                Expires = refreshToken.ExpiresAt
+            });
         return Ok(accessTokens);
     }
     

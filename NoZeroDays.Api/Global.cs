@@ -12,6 +12,7 @@ global using FluentValidation;
 
 // ----------------------------------------
 global using NoZeroDays.Api;
+global using NoZeroDays.Api.Settings;
 global using NoZeroDays.Api.Database;
 global using NoZeroDays.Api.Enums;
 global using NoZeroDays.Api.DTO;

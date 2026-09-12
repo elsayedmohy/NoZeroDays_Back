@@ -6,7 +6,8 @@ builder.AddControllers()
     .AddDatabase()
     .AddObservability()
     .AddApplicationServices()
-    .AddAuthenticationServices();
+    .AddAuthenticationServices()
+    .AddCorsPolicy();
 
 
 WebApplication app = builder.Build();
@@ -19,7 +20,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseExceptionHandler();
-
+app.UseCors(CorsOptions.PolicyName);
 app.UseAuthentication();
 app.UseAuthorization();
 
